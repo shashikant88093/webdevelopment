@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Latest compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous"
+    />
+
+    <!-- Optional theme -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+      crossorigin="anonymous"
+    />
+
+    <title>Shorter Url</title>
+  </head>
+  <body>
+    <div class="container">
+       <div class="page-header">
+        <% if (locals.id) { %>
+        <h1>Shorter Url</h1>
+            <p><%= id %></p>
+        <% } %>
+      </div>
+      <div class="page-header">
+        <h3>Please provide the Url</h3>
+      </div>
+      <form method="post" action="/api/v1/shorterurl/url">
+        <div class="form-group">
+          <label>Please provide the Url</label>
+          <input
+            type="text"
+            class="form-control mb-4"
+            placeholder="https://example.com"
+            aria-describedby="basic-addon1"
+            style="width: 100%"
+            name="url"
+          />
+        </div>
+        <button class="btn btn-default" type="submit">Generate</button>
+      </form>
+    </div>
+    <!-- Latest compiled and minified JavaScript -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
