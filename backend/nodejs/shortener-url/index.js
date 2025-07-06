@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require('body-parser')
-const { nanoid } = require('nanoid')
 const urlRoute = require("./routes/url");
+const userRoute = require("./routes/User")
 const connectToMongoose = require('./DB/connect')
 const staticRoute = require("./routes/StaticRoute")
 const URL = require("./models/url") // Make sure this points to your URL model
@@ -29,7 +29,7 @@ app.get("/api/v1/shorterurl/test", (req, res) => {
     res.end("I am alive")
 });
 
-app.use("/api/v1/shorterurl",staticRoute)
+app.use("/api/v1/shorterurl", staticRoute)
 
 // URL routes
 app.use("/api/v1/shorterurl", urlRoute);
@@ -55,7 +55,8 @@ app.get("/api/v1/shorterurl/url/:id", async (req, res) => {
     console.log(entry, "entey")
     res.redirect(entry.redirectURL);
 })
-// analyatic 
+// user sign up and sign in
+app.use("/api/v1/shorterurl",userRoute)
 // 404 handler
 app.use((req, res) => {
     res.status(404).json({ error: "Not Found" });

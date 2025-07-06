@@ -28,26 +28,32 @@
       </div>
       <form method="post" action="/api/v1/shorterurl/signup">
         <div class="form-group">
-         
+          <label>user Name</label>
+          <input
+            type="text"
+            class="form-control mb-4"
+            placeholder="user Name"
+            aria-describedby="basic-addon1"
+            style="width: 100%"
+            name="userName"
+          />
           <label>Email</label>
           <input
             type="email"
             class="form-control mb-4"
-            placeholder="Email"
+            placeholder="email"
             aria-describedby="basic-addon1"
             style="width: 100%"
             name="email"
-            required
           />
           <label>Password</label>
           <input
             type="password" 
             class="form-control mb-4"
-            placeholder="Password"
+            placeholder="password"
             aria-describedby="basic-addon1"
             style="width: 100%"
             name="password"
-            required
           />
         </div>
         <button class="btn btn-default" type="submit">Signup</button>

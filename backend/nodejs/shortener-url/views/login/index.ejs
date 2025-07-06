@@ -24,33 +24,31 @@
   <body>
     <div class="container">
       <div class="page-header">
-        <h3>Sign UP</h3>
+        <h3>Login</h3>
       </div>
-      <form method="post" action="/api/v1/shorterurl/signup">
+      <form method="post" action="/api/v1/shorterurl/login">
         <div class="form-group">
          
           <label>Email</label>
           <input
             type="email"
             class="form-control mb-4"
-            placeholder="Email"
+            placeholder="email"
             aria-describedby="basic-addon1"
             style="width: 100%"
             name="email"
-            required
           />
           <label>Password</label>
           <input
             type="password" 
             class="form-control mb-4"
-            placeholder="Password"
+            placeholder="password"
             aria-describedby="basic-addon1"
             style="width: 100%"
             name="password"
-            required
           />
         </div>
-        <button class="btn btn-default" type="submit">Signup</button>
+        <button class="btn btn-default" type="submit">Login</button>
       </form>
     </div>
     <!-- Latest compiled and minified JavaScript -->
