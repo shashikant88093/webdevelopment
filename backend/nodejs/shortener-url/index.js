@@ -1,67 +1,48 @@
 const express = require("express");
-const bodyParser = require('body-parser')
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const {connectToMongoDB}  = require("./DB/connect");
+const { checkForAuthenticaation ,restrictTo} = require("./middleware/auth");
+const URL = require("./models/url");
+
 const urlRoute = require("./routes/url");
-const userRoute = require("./routes/User")
-const connectToMongoose = require('./DB/connect')
-const staticRoute = require("./routes/StaticRoute")
-const URL = require("./models/url") // Make sure this points to your URL model
-
-
+const staticRoute = require("./routes/StaticRoute");
+const userRoute = require("./routes/user");
 
 const app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// set the view engine
-
-app.set('view engine', 'ejs')
-app.set('views', __dirname + '/views'); // Ensure views directory is set
-
-// env access
-require("dotenv").config()
 const PORT = 8000;
 
-// connect MongoDb function
-connectToMongoose(process.env.MONGODBURL)
-// Health check route
-app.get("/api/v1/shorterurl/test", (req, res) => {
-    res.end("I am alive")
-});
+connectToMongoDB(process.env.MONGODBURL ?? "mongodb://localhost:27017/short-url")
 
-app.use("/api/v1/shorterurl", staticRoute)
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"));
 
-// URL routes
-app.use("/api/v1/shorterurl", urlRoute);
-// get short URL by ID
-app.get("/api/v1/shorterurl/url/:id", async (req, res) => {
-    const shortId = req.params.id;
-    console.log(shortId, "id")
-    const entry = await URL.findOneAndUpdate(
-        { shortId },
-        {
-            $push: {
-                visitHistory: {
-                    timestamp: new Date()
-                }
-            }
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+app.use("/url",restrictTo(["NORMAL","ADMIN"]) ,urlRoute);
+app.use("/user", userRoute);
+app.use("/", staticRoute);
+
+app.use(checkForAuthenticaation);
+
+
+app.get("/url/:shortId", async (req, res) => {
+  const shortId = req.params.shortId;
+  const entry = await URL.findOneAndUpdate(
+    {
+      shortId,
+    },
+    {
+      $push: {
+        visitHistory: {
+          timestamp: Date.now(),
         },
-        { new: true }
-    );
-
-    if (!entry) {
-        return res.status(404).json({ error: "Short URL not found" });
+      },
     }
-    console.log(entry, "entey")
-    res.redirect(entry.redirectURL);
-})
-// user sign up and sign in
-app.use("/api/v1/shorterurl",userRoute)
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({ error: "Not Found" });
+  );
+  res.redirect(entry.redirectURL);
 });
 
-app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server Started at PORT:${PORT}`));

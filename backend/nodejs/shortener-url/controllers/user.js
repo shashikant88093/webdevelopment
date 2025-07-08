@@ -1,54 +1,29 @@
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require("uuid");
+const User = require("../models/user");
+const { setUser } = require("../service/auth");
 
-const USER = require('../models/user')
-
-// Auth 
-const {setUser} = require("../service/auth")
-async function handleSignUP(req, res) {
-    const { userName, email, password } = req.body
-    console.log(userName, email, password)
-    if (!email && !password && userName) return res.status(400).json({
-        error: "All fields are required"
-    })
-    const newUser = await USER.create({
-        userName,
+async function handleUserSignup(req, res) {
+    const { name, email, password } = req.body;
+    await User.create({
+        name,
         email,
-        password
-    })
-
-
-    if (!newUser) {
-        return res.status(500).json({ error: "Failed to store user in database" });
-    }
-
-    return res.send(newUser);
-
-
-
+        password,
+    });
+    return res.redirect("/");
 }
 
 
-async function handleLogin(req, res) {
-    const { email, password } = req.body
-    if (!email && !password) return res.status(400).json({
-        error: "Email or password are missing"
-    })
+async function handleUserLogin(req, res) {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email, password });
 
-    const entry = await USER.findOne({
-        email,
-        password
-    })
-    // console.log(entry, "entry")
-    // return res.send(entry)
-    const sessionId = uuidv4()
-    setUser(sessionId,entry)
-    res.cookie("uuid",sessionId)
-
-    return res.redirect("/api/v1/shorterurl/login")
-
+    const token = setUser(user);
+    res.cookie("token", token);
+    // res.json({ token })
+    return res.redirect("/");
 }
 
-
-
-
-module.exports = { handleSignUP, handleLogin }
+module.exports = {
+    handleUserSignup,
+    handleUserLogin,
+};

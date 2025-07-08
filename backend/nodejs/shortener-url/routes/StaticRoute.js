@@ -1,21 +1,32 @@
-const express = require('express')
+const express = require("express");
+const URL = require("../models/url");
+const { restrictTo } = require("../middleware/auth");
 const router = express.Router();
 
 
-async function handleViewsInputUrl(req, res) {
-     res.render('pages/index');
-}
+router.get("/admin/urls",restrictTo(["ADMIN"]), async (req, res) => {
+  const allurls = await URL.find({});
+//   console.log(allurls, "all urls")
+  return res.render("home", {
+    urls: allurls,
+  });
+});
 
-async function handleviewSignup(req, res) {
-     res.render('signup/index')
-}
 
-async function handleviewLogin(req, res) {
-     res.render('login/index')
-}
+router.get("/", restrictTo(["NORMAL", "ADMIN"]), async (req, res) => {
+  const allurls = await URL.find({ createdBy: req.user?._id });
+//   console.log(allurls, "all urls")
+  return res.render("home", {
+    urls: allurls,
+  });
+});
 
-router.get("/inputfield", handleViewsInputUrl)
-router.get("/signup", handleviewSignup)
-router.get("/login", handleviewLogin)
+router.get("/signup", (req, res) => {
+  return res.render("signup");
+});
 
-module.exports = router
+router.get("/login", (req, res) => {
+  return res.render("login");
+});
+
+module.exports = router;
